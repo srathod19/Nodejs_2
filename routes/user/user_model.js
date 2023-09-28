@@ -15,6 +15,9 @@ var User = {
             }
         })
     },
+    uploadImg: function (req, res) {
+        res.send("fiile uploaded");
+    },
 }
 
 module.exports = User;

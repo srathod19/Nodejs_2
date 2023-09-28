@@ -5,12 +5,23 @@ const user_model = require('./user_model');
 const middleware = require('../../middleware/headerValidator');
 const GLOBALS = require('../../config/constant');
 var cryptoLib = require("cryptlib");
-
+const multer = require('multer');
 var shaKey = cryptoLib.getHashSha256(GLOBALS.KEY, 32);
 // const { body, validationResult } = require('express-validator');
 // const { signupValidation, loginValidation } = require('../../middleware/headerValidator')
 const jwt = require('jsonwebtoken');
 const secretKey = "secretKey";
+
+const upload = multer({
+    storage: multer.diskStorage({
+        destination: function (req, file, callback) {
+            callback(null, "uploads")
+        },
+        filename: function (req, file, callback) {
+            callback(null, file.fieldname + "_" + Date.now() + ".jpg");
+        }
+    })
+}).single("userfile");
 
 router.post('/home', (req, res) => {
     // res.send({ "name": "sachin" })
@@ -101,5 +112,7 @@ router.post('/test', (req, res) => {
     }
 
 });
-
+router.post('/upload', upload, function (req, res) {
+    user_model.uploadImg(req, res);
+});
 module.exports = router;
